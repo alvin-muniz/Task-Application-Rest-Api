@@ -59,6 +59,7 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
+        System.out.println("This line is hit");
         return isCompleted == task.isCompleted
                 && id.equals(task.id) && title.equals(task.title)
                 && description.equals(task.description);

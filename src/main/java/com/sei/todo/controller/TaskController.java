@@ -5,6 +5,7 @@ import com.sei.todo.exceptions.InformationExistsException;
 import com.sei.todo.exceptions.InformationNotFoundException;
 import com.sei.todo.model.Task;
 import com.sei.todo.repository.TaskRepository;
+import com.sei.todo.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,74 +17,37 @@ import java.util.Optional;
 @RequestMapping(path="/api")
 public class TaskController  {
     //injecting this for use
-    private TaskRepository taskRepository;
+    private TaskService taskService;
 
     @Autowired
-    public TaskController(TaskRepository taskRepository){
-        this.taskRepository = taskRepository;
+    public TaskController(TaskService taskService){
+        this.taskService = taskService;
     }
 
     @GetMapping(path="/tasks")
     public List<Task> getTasks(){
         System.out.println("Calling get Tasks");
-        return this.taskRepository.findAll();
+        return this.taskService.getTasks();
     }
 
     @GetMapping(path = "/tasks/{taskId}")
     public Task getTask(@PathVariable Long taskId)  {
-        System.out.println("getting the category with id " + taskId);
-        Optional<Task> foundTask = this.taskRepository.findById(taskId);
-        if(foundTask.isPresent())
-            return foundTask.get();
-        else
-            throw new InformationNotFoundException("Nope");
+        return this.taskService.getTask(taskId);
     }
 
     @PostMapping("/tasks/")
     public Task createTask(@RequestBody Task taskObject)
-    { System.out.println("Creating a new category");
-        Optional<Task> task = this.taskRepository.findByTitle(taskObject.getTitle());
-        if(!(task.isPresent()))
-            return this.taskRepository.save(taskObject);
-        else
-            throw new InformationExistsException("There is already a note wtih that title!!");
+    {
+        return this.taskService.createTask(taskObject);
     }
 
     @PutMapping("/tasks/{taskId}")
     public Task updateTask(@PathVariable(value = "taskId")Long taskId, @RequestBody Task taskObject){
-        System.out.println("this task was updated ID: " + taskId + "Update info: " + taskObject.toString());
-
-        Optional<Task> foundTask = this.taskRepository.findById(taskId);
-        if(foundTask.isPresent())
-        {
-           boolean sameObject = foundTask.equals(taskObject);
-           if(sameObject)
-           {
-               throw new InformationExistsException("THis update changes nothing");
-           }else
-           {
-               Task updateTask = this.taskRepository.findById(taskId).get();
-               updateTask.setDescription(taskObject.getDescription());
-               updateTask.setCompleted(taskObject.isCompleted());
-               updateTask.setTitle(taskObject.getTitle());
-               return taskRepository.save(updateTask);
-           }
-        }else
-        {
-            throw new InformationNotFoundException("This object does not exists");
-        }
-
+              return this.taskService.updateTask(taskId, taskObject);
     }
 
-    @DeleteMapping("/task/{taskId}")
+    @DeleteMapping("/tasks/{taskId}")
     public Task deleteTask(@PathVariable(value = "taskId") Long taskId){
-
-        Task foundTask = this.taskRepository.findById(taskId).get();
-                if(foundTask != null) {
-                    this.taskRepository.delete(foundTask);
-                    return foundTask;
-                }
-                else
-                    throw new InformationNotFoundException("This is not found to be delted");
+                return this.taskService.deleteTask(taskId);
     }
 }
