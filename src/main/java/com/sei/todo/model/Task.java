@@ -1,6 +1,7 @@
 package com.sei.todo.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name="task")
@@ -52,5 +53,16 @@ public class Task {
                 "\n Description" + this.getDescription()
                 + "Is Completed: " + this.isCompleted();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return isCompleted == task.isCompleted
+                && id.equals(task.id) && title.equals(task.title)
+                && description.equals(task.description);
+    }
+
 
 }

@@ -34,7 +34,6 @@ and below dependency:
 ##Defining Entity and Table Relationships
 @Entity Annotation and @Table(name = "tasks")
 
-
     @Id
 
     @Column
@@ -50,7 +49,15 @@ and below dependency:
     @Column
     private String description;
 
+##Spring Boot Magic
 
+The below query found under the Task repo initially gave me an error.
+The error stated that the property was not found.
+I realized that I needed to change the descriptor, the title to be one of my properties in my file
+This change was necessary and suprising as it meant that Spring Boot actively searched my project for those 
+property names and queried them accordingly. Magic.
+
+Task findByTitle(String taskName);
 
 
 
