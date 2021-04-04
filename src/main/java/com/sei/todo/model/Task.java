@@ -3,7 +3,7 @@ package com.sei.todo.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="tasks")
+@Table(name="task")
 public class Task {
 
     @Id

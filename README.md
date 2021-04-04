@@ -31,12 +31,24 @@ and below dependency:
 <scope>runtime</scope>
 </dependency>
 
-`public Task(Long id, String title, boolean isCompleted, String description){
-    this.id = id;
-    this.title = title;
-    this.isCompleted = isCompleted;
-    this.description = description;
-}`
+##Defining Entity and Table Relationships
+@Entity Annotation and @Table(name = "tasks")
+
+
+    @Id
+
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column
+    private String title;
+
+    @Column
+    private boolean isCompleted;
+
+    @Column
+    private String description;
 
 
 
