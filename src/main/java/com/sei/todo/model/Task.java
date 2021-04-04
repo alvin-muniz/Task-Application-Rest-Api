@@ -1,10 +1,23 @@
 package com.sei.todo.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name="tasks")
 public class Task {
 
+    @Id
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
     private String title;
+
+    @Column
     private boolean isCompleted;
+
+    @Column
     private String description;
 
     public Task(Long id, String title, boolean isCompleted, String description)

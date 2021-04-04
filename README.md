@@ -15,7 +15,7 @@ This task application is based off of Spring and will utilize a REST principles 
 ###Defining The Domain
 The domain in this application will consist of a Task object to capture bare essentials needed for a simple task manager.
 
-##Setting up enviroment
+##Setting up environment
 I needed to add the Postgres Driver:
 
 spring.datasource.driver-class-name=org.postgresql.Driver
