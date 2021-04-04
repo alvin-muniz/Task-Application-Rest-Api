@@ -1,4 +1,4 @@
-# ![](https://ga-dash.s3.amazonaws.com/production/assets/logo-9f88ae6c9c3871690e33280fcf557f33.png) Create a Todo App Lab
+f# ![](https://ga-dash.s3.amazonaws.com/production/assets/logo-9f88ae6c9c3871690e33280fcf557f33.png) Create a Todo App Lab
 
 ## Opening
 
@@ -8,6 +8,41 @@ more about Spring and its modules.
 This will be a fairly open-ended lab. We want you to be able to think through the design decisions and understand the
 reason why you choose one thing over the other. There's just one main ground rule to follow: Make sure you only work
 with the technologies/tools we covered during the lesson.
+
+##Task Application
+This task application is based off of Spring and will utilize a REST principles to provide an API to create, read, update and delete task.
+
+###Defining The Domain
+The domain in this application will consist of a Task object to capture bare essentials needed for a simple task manager.
+
+##Setting up enviroment
+I needed to add the Postgres Driver:
+
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.url=jdbc:postgresql://localhost:5432/task
+spring.datasource.username=postgres
+spring.datasource.password=password
+
+and below dependency:
+
+<dependency>
+<groupId>org.postgresql</groupId>
+<artifactId>postgresql</artifactId>
+<scope>runtime</scope>
+</dependency>
+
+`public Task(Long id, String title, boolean isCompleted, String description){
+    this.id = id;
+    this.title = title;
+    this.isCompleted = isCompleted;
+    this.description = description;
+}`
+
+
+
+
+
+
 
 ## Deliverables
 
