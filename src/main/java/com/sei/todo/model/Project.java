@@ -33,18 +33,27 @@ public class Project {
     @Column
     private Priority priority;
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "project")
     private List<Task> taskList;
 
     public Project() { }
 
-    public Project(Long id, String name, Date startDate, Date endDate, Priority priority) {
+    public List<Task> getTaskList() {
+        return taskList;
+    }
+
+    public void setTaskList(List<Task> taskList) {
+        this.taskList = taskList;
+    }
+
+    public Project(Long id, String name, Date startDate, Date endDate, Priority priority, List<Task> taskList) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.priority = priority;
+        this.taskList = taskList;
     }
 
     public Long getId() {
@@ -95,6 +104,7 @@ public class Project {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", priority=" + priority +
+                ", taskList=" + taskList +
                 '}';
     }
 
@@ -103,7 +113,7 @@ public class Project {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Project project = (Project) o;
-        return Objects.equals(id, project.id) && Objects.equals(name, project.name) && Objects.equals(startDate, project.startDate) && Objects.equals(endDate, project.endDate) && priority == project.priority;
+        return Objects.equals(id, project.id) && Objects.equals(name, project.name) && Objects.equals(startDate, project.startDate) && Objects.equals(endDate, project.endDate) && priority == project.priority && Objects.equals(taskList, project.taskList);
     }
 
 }

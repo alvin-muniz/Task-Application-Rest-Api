@@ -23,17 +23,28 @@ public class Task {
     @Column
     private String description;
 
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name="project_id")
     private Project project;
 
-    public Task(Long id, String title, boolean isCompleted, String description)
-    {
+
+
+    public Task(Long id, String title, boolean isCompleted, String description, Project project) {
         this.id = id;
         this.title = title;
         this.isCompleted = isCompleted;
         this.description = description;
+        this.project = project;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     public Task(){}
@@ -54,11 +65,14 @@ public class Task {
     public void setDescription(String description) { this.description = description; }
 
     @Override
-    public String toString(){
-        return "Task #" + this.getId() +
-                "\nTitle" + this.getTitle() +
-                "\n Description" + this.getDescription()
-                + "Is Completed: " + this.isCompleted();
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", isCompleted=" + isCompleted +
+                ", description='" + description + '\'' +
+                ", project=" + project +
+                '}';
     }
 
     @Override
@@ -66,11 +80,7 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        System.out.println("This line is hit");
-        return isCompleted == task.isCompleted
-                && id.equals(task.id) && title.equals(task.title)
-                && description.equals(task.description);
+        return isCompleted == task.isCompleted && Objects.equals(id, task.id) && Objects.equals(title, task.title) && Objects.equals(description, task.description) && Objects.equals(project, task.project);
     }
-
 
 }

@@ -4,6 +4,7 @@ package com.sei.todo.controller;
 import com.sei.todo.exceptions.InformationExistsException;
 import com.sei.todo.exceptions.InformationNotFoundException;
 import com.sei.todo.model.Task;
+import com.sei.todo.repository.ProjectRepository;
 import com.sei.todo.repository.TaskRepository;
 import com.sei.todo.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,12 @@ import java.util.Optional;
 public class TaskController  {
     //injecting this for use
     private TaskService taskService;
+    private ProjectRepository projectRepository;
 
     @Autowired
-    public TaskController(TaskService taskService){
+    public TaskController(TaskService taskService, ProjectRepository projectRepository){
         this.taskService = taskService;
+        this.projectRepository = projectRepository;
     }
 
     @GetMapping(path="/tasks")
@@ -38,6 +41,7 @@ public class TaskController  {
     @PostMapping("/tasks/")
     public Task createTask(@RequestBody Task taskObject)
     {
+        taskObject.setProject(this.projectRepository.findById(1L).get());
         return this.taskService.createTask(taskObject);
     }
 

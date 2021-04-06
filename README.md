@@ -60,7 +60,56 @@ property names and queried them accordingly. Magic.
 Task findByTitle(String taskName);
 
 
+##Project Class
+The project class is a 'wrapper' to encapsulate the tasks as well as provide further higher level project specific details
+The model is simple:
 
+
+    @Id
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column
+    private String name;
+
+    @Column
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date startDate;
+
+    @Column
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date endDate;
+
+    @Column
+    private Priority priority;
+
+
+    @OneToMany(mappedBy = "project")
+    private List<Task> taskList;
+
+This will have a bi direction one to many relationship with the tasks.
+
+Makes sense! You have a project and tasks related to it!
+
+##Infinite Loop caused by bi-directional one to many
+I ran into an error where I was receiving an infinite loop in my api tests when adding a new task to a project.
+
+    @OneToMany(mappedBy = "project")
+    private List<Task> taskList;
+
+    @ManyToOne
+    @JoinColumn(name="project_id")
+    private Project project;
+
+The models were linked per the attached. Upon researching, I found that adding the @JSON Ignore Annotation helped resolve the issue, specifically on the project model like so:
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name="project_id")
+    private Project project;
 
 
 ## Deliverables
