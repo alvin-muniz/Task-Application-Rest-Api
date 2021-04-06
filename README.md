@@ -31,45 +31,28 @@ student will go through its `README`, talking through each point. Be prepared to
 
 We'll build this back-end app incrementally.
 
-### Step 1 (Spring Boot)
-
-Today, you'll just set up your app using Spring Boot, as we did in the lesson earlier.
-
-- Use Maven to download and build all of the dependencies.
-- Create a REST controller.
-- Create a `/hello` endpoint that returns a `'Hello World!'` string.
-- Use Postman to test the API.
-
-#### COMMIT MESSAGE: Step 1 - COMPLETED
-
-----
-
-### Step 2 (Spring Profile)
-
-In the next step, you'll use Spring Profile to create a development-specific environment in your app. This is where all
-of your environment-specific configuration will go.
-
-#### COMMIT MESSAGE: Step 2 - COMPLETED
-
-----
+### Project Environment
+This is a spring boot api for a task management software. Postgres SQL is used as the backend.
 
 ### Step 3 (Spring Data)
 
-Create `Category` and `Item` model. You'll use PostgreSQL as your database and Spring Data to talk to your database.
+My model will be defined through a Task object with a simple domain
 
-This step will be done in two parts.
+    @Id
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-#### 3(a)
+    @Column
+    private String name;
 
-In this step, you'll only create a `Category` model.
+    @Column
+    private String description;
 
-- The `Category` should have at least two fields: `name` and `description`.
-- You'll create full CRUD endpoints for `Category` controller.
+    @Column
+    private boolean isCompleted;
 
-Let's test all the endpoints
 
-| Request Type | URL| |--|--| | GET | /api/categories/ | |POST|/api/categories/| |GET|/api/categories/{categoryId}|
-|PUT|/api/categories/{categoryId}| |DELETE|/api/categories/{categoryId}|
 
 #### COMMIT MESSAGE: Step 3A - COMPLETED
 
