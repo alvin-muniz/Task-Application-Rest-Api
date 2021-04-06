@@ -1,10 +1,12 @@
 package com.sei.todo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name="task")
+@Table(name="tasks")
 public class Task {
 
     @Id
@@ -20,6 +22,11 @@ public class Task {
 
     @Column
     private String description;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name="project_id")
+    private Project project;
 
     public Task(Long id, String title, boolean isCompleted, String description)
     {
