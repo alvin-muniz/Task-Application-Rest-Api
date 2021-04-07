@@ -5,6 +5,7 @@ import com.sei.todo.exceptions.InformationNotFoundException;
 import com.sei.todo.model.Project;
 import com.sei.todo.model.Task;
 import com.sei.todo.repository.ProjectRepository;
+import com.sei.todo.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +18,13 @@ import java.util.Optional;
 public class ProjectService {
 
     private ProjectRepository projectRepository;
+    private TaskRepository taskRepository;
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository,
+                          TaskRepository taskRepository) {
         this.projectRepository = projectRepository;
+        this.taskRepository = taskRepository;
     }
 
     public List<Project> getProjects() {
@@ -98,14 +102,52 @@ public class ProjectService {
     }
 
   //  @PostMapping(path = "/projects/{projectId}/tasks")
-    public void createProjectTask(Long projectId){
+    public void createProjectTask(Long projectId, Task taskObject){
+        Project project = getProject(projectId);
+        taskObject.setProject(project);
+        //checking if there are duplicate tasks
+        if(!project.getTaskList().isEmpty())
+        {
+            for (Task task: project.getTaskList()) {
+                if(task.getTitle().equals(taskObject.getTitle()))
+                    throw new InformationExistsException("This task exists");
+            }
+            taskRepository.save(taskObject);
+
+        }else {
+            System.out.println("This task is saved!!");
+            taskRepository.save(taskObject);
+        }
+
+
 
     }
 
   //  @PutMapping(path = "/projects/{projectId}/tasks/{taskId}")
-    public void updateProjectTask(Long projectId,
+    public Task updateProjectTask(Long projectId,
                                   Long taskId,
-                                  Task taskObject){
+                                  Task taskObject)
+    {
+        Project project = getProject(projectId);
+        Optional task =
+                Optional.ofNullable(project.getTaskList().stream().filter(t -> t.getId().equals(taskId))).stream().findFirst();
+        if(task.isPresent())
+        {
+            boolean sameObject = task.equals(taskObject);
+            if(sameObject){
+                throw new InformationExistsException("THis update changes nothing");
+            }else{
+                Task updateTask = (Task) task.get();
+                updateTask.setDescription(taskObject.getDescription());
+                updateTask.setCompleted(taskObject.isCompleted());
+                updateTask.setTitle(taskObject.getTitle());
+                return taskRepository.save(updateTask);
+            }
+
+        }else{
+            throw new InformationNotFoundException("This task does not exists");
+        }
+
 
     }
 
@@ -113,7 +155,15 @@ public class ProjectService {
     public void deleteProjectTask(Long projectId,
                                   Long taskId)
     {
+        Project project = getProject(projectId);
 
+        Optional task =
+                Optional.ofNullable(project.getTaskList().stream().filter(t -> t.getId().equals(taskId))).stream().findFirst();
+        if(task.isPresent()) {
+            this.taskRepository.delete((Task)task.get());
+        }
+        else
+            throw new InformationNotFoundException("This is not found to be deleted");
     }
 
 }
