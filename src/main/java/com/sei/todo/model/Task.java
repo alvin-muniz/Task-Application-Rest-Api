@@ -1,9 +1,6 @@
 package com.sei.todo.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -30,8 +27,6 @@ public class Task {
     @ManyToOne
     @JoinColumn(name="project_id")
     private Project project;
-
-
 
     public Task(Long id, String title, boolean isCompleted, String description, Project project) {
         this.id = id;

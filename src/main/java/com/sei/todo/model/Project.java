@@ -2,6 +2,8 @@ package com.sei.todo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -35,6 +37,7 @@ public class Project {
 
 
     @OneToMany(mappedBy = "project")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Task> taskList;
 
     public Project() { }

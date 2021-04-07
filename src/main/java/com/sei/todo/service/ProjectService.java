@@ -121,7 +121,7 @@ public class ProjectService {
 
     }
 
-    @PutMapping(path = "/projects/{projectId}/tasks/{taskId}")
+//    @PutMapping(path = "/projects/{projectId}/tasks/{taskId}")
     public Task updateProjectTask(Long projectId,
                                   Long taskId,
                                   Task taskObject)
@@ -135,9 +135,10 @@ public class ProjectService {
                 throw new InformationExistsException("THis update changes nothing");
             }else{
                 Task updateTask = (Task) task.get();
-                updateTask.setDescription(taskObject.getDescription());
-                updateTask.setCompleted(taskObject.isCompleted());
-                updateTask.setTitle(taskObject.getTitle());
+//                updateTask.setDescription(taskObject.getDescription());
+//                updateTask.setCompleted(taskObject.isCompleted());
+//                updateTask.setTitle(taskObject.getTitle());
+                updateTask = taskObject;
                 return taskRepository.save(updateTask);
             }
 
