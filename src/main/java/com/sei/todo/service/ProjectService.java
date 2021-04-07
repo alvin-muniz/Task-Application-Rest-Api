@@ -19,62 +19,57 @@ public class ProjectService {
     private ProjectRepository projectRepository;
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository)
-    {
+    public ProjectService(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
     }
 
-    public List<Project> getProjects(){
+    public List<Project> getProjects() {
         return this.projectRepository.findAll();
     }
 
-    public Project getProject(Long projectId){
+    public Project getProject(Long projectId) {
         Optional<Project> foundProject = this.projectRepository.findById(projectId);
-        if(foundProject.isPresent())
+        if (foundProject.isPresent())
             return foundProject.get();
         else
             throw new InformationNotFoundException("This project does not exists with id " + projectId);
     }
 
-    public Project createProject(Project projectObject){
+    public Project createProject(Project projectObject) {
         System.out.println("Creating a new project");
         Optional<Project> project = this.projectRepository.findByName(projectObject.getName());
-        if(project.isPresent())
+        if (project.isPresent())
             throw new InformationExistsException("No need to create another one");
         else
             return this.projectRepository.save(projectObject);
     }
 
-    public Project updateProject( Long projectId, Project projectObject){
+    public Project updateProject(Long projectId, Project projectObject) {
         System.out.println("Updating a Project with ID " + projectId);
 
         Optional<Project> project = projectRepository.findById(projectId);
-        if(project.isPresent()){
-            if(project.get().getName().equals(projectObject.getName())){
+        if (project.isPresent()) {
+            if (project.get().getName().equals(projectObject.getName())) {
                 throw new InformationExistsException("No updates here");
-            }else{
+            } else {
                 return projectRepository.save(projectObject);
             }
-        }else{
+        } else {
             throw new InformationNotFoundException("This project does not exists");
         }
     }
 
 
-    public void deleteProject(Long projectId){
+    public void deleteProject(Long projectId) {
         Optional<Project> project = projectRepository.findById(projectId);
-        if(project.isPresent())
-        {
-            if(project.get().getTaskList() != null)
-            {
+        if (project.isPresent()) {
+            if (project.get().getTaskList() != null) {
                 System.out.println("Cannot delete project that has tasks");
-            }else {
+            } else {
                 System.out.println("project deleted " + projectId);
                 projectRepository.deleteById(projectId);
             }
-        }
-        else
-        {
+        } else {
             throw new InformationNotFoundException("Cannot delete a category that does not exists");
         }
     }

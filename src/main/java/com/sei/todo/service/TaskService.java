@@ -46,7 +46,8 @@ public class TaskService {
     }
 
     public Task updateTask(Long taskId,Task taskObject){
-        System.out.println("Service call this task was updated ID: " + taskId + "Update info: " + taskObject.toString());
+        System.out.println("Service call this task was updated ID: " + taskId +
+                "Update info: " + taskObject.toString());
 
         Optional<Task> foundTask = this.taskRepository.findById(taskId);
         if(foundTask.isPresent())
