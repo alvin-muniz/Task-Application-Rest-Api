@@ -1,5 +1,9 @@
 package com.sei.todo.model;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -13,53 +17,65 @@ public class Task {
     private Long id;
 
     @Column
-    private String name;
-
-    @Column
-    private String description;
+    private String title;
 
     @Column
     private boolean isCompleted;
 
+    @Column
+    private String description;
+
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name="project_id")
+    private Project project;
+
+
+
+    public Task(Long id, String title, boolean isCompleted, String description, Project project) {
+        this.id = id;
+        this.title = title;
+        this.isCompleted = isCompleted;
+        this.description = description;
+        this.project = project;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
     public Task(){}
 
-    public Task(Long id, String name, String description, boolean isCompleted) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.isCompleted = isCompleted;
-    }
+    public Long getId() { return id; }
 
-    public Long getId() {
-        return id;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getTitle() { return title; }
 
-    public String getName() {
-        return name;
-    }
+    public void setTitle(String title) { this.title = title; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public boolean isCompleted() { return isCompleted; }
 
-    public String getDescription() {
-        return description;
-    }
+    public void setCompleted(boolean completed) { isCompleted = completed; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getDescription() { return description; }
 
-    public boolean isCompleted() {
-        return isCompleted;
-    }
+    public void setDescription(String description) { this.description = description; }
 
-    public void setCompleted(boolean completed) {
-        isCompleted = completed;
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", isCompleted=" + isCompleted +
+                ", description='" + description + '\'' +
+                '}';
     }
 
     @Override
@@ -67,16 +83,8 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return isCompleted == task.isCompleted && Objects.equals(id, task.id) && Objects.equals(name, task.name) && Objects.equals(description, task.description);
+        return isCompleted == task.isCompleted && Objects.equals(id, task.id) && Objects.equals(title, task.title) && Objects.equals(description, task.description) && Objects.equals(project, task.project);
     }
 
-    @Override
-    public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", isCompleted=" + isCompleted +
-                '}';
-    }
+
 }
