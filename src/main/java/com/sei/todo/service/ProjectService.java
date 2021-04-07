@@ -102,7 +102,7 @@ public class ProjectService {
     }
 
   //  @PostMapping(path = "/projects/{projectId}/tasks")
-    public void createProjectTask(Long projectId, Task taskObject){
+    public Task createProjectTask(Long projectId, Task taskObject){
         Project project = getProject(projectId);
         taskObject.setProject(project);
         //checking if there are duplicate tasks
@@ -112,13 +112,11 @@ public class ProjectService {
                 if(task.getTitle().equals(taskObject.getTitle()))
                     throw new InformationExistsException("This task exists");
             }
-            taskRepository.save(taskObject);
 
         }else {
             System.out.println("This task is saved!!");
-            taskRepository.save(taskObject);
         }
-
+        return taskRepository.save(taskObject);
 
 
     }

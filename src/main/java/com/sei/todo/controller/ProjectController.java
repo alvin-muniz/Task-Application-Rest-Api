@@ -51,26 +51,29 @@ public class ProjectController {
         projectService.deleteProject(projectId);
     }
 
-    @PostMapping(path = "/projects/{projectId}/tasks")
+    @GetMapping(path = "/projects/{projectId}/tasks")
     public List<Task> getProjectTasks(@PathVariable Long projectId){
-        return new ArrayList<>();
+        return projectService.getProjectTasks(projectId);
     }
 
-    @PostMapping(path = "/projects/{projectId}/tasks/{taskId}")
+    @GetMapping(path = "/projects/{projectId}/tasks/{taskId}")
     public Task getProjectTask(@PathVariable Long projectId,
                                @PathVariable Long taskId){
-        return new Task();
+        return projectService.getProjectTask(projectId,taskId);
     }
 
     @PostMapping(path = "/projects/{projectId}/tasks")
-    public void createProjectTask(@PathVariable Long projectId){
-
+    public Task createProjectTask(@PathVariable Long projectId,
+                                  @RequestBody Task taskObject){
+            return projectService.createProjectTask(projectId, taskObject);
     }
 
     @PutMapping(path = "/projects/{projectId}/tasks/{taskId}")
-    public void updateProjectTask(@PathVariable Long projectId,
+    public Task updateProjectTask(@PathVariable Long projectId,
                                   @PathVariable Long taskId,
                                   @RequestBody Task taskObject){
+
+        return projectService.updateProjectTask(projectId, taskId,taskObject);
 
     }
 
@@ -78,6 +81,6 @@ public class ProjectController {
     public void deleteProjectTask(@PathVariable Long projectId,
                                   @PathVariable Long taskId)
     {
-
+                projectService.deleteProjectTask(projectId,taskId);
     }
 }
