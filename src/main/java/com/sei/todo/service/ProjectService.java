@@ -78,13 +78,13 @@ public class ProjectService {
         }
     }
 
-//    @GetMapping(path = "/projects/{projectId}/tasks")
+    @GetMapping(path = "/projects/{projectId}/tasks")
     public List<Task> getProjectTasks(Long projectId){
         System.out.println("Project Service retrieving tasks in project");
         return this.getProject(projectId).getTaskList();
     }
 
-//    @GetMapping(path = "/projects/{projectId}/tasks/{taskId}")
+    @GetMapping(path = "/projects/{projectId}/tasks/{taskId}")
     public Task getProjectTask(Long projectId,
                                Long taskId){
         Project project = getProject(projectId);
@@ -101,7 +101,7 @@ public class ProjectService {
             }
     }
 
-  //  @PostMapping(path = "/projects/{projectId}/tasks")
+    @PostMapping(path = "/projects/{projectId}/tasks")
     public Task createProjectTask(Long projectId, Task taskObject){
         Project project = getProject(projectId);
         taskObject.setProject(project);
@@ -121,17 +121,16 @@ public class ProjectService {
 
     }
 
-  //  @PutMapping(path = "/projects/{projectId}/tasks/{taskId}")
+    @PutMapping(path = "/projects/{projectId}/tasks/{taskId}")
     public Task updateProjectTask(Long projectId,
                                   Long taskId,
                                   Task taskObject)
     {
         Project project = getProject(projectId);
-        Optional task =
-                Optional.ofNullable(project.getTaskList().stream().filter(t -> t.getId().equals(taskId))).stream().findFirst();
+        Optional<Task> task = project.getTaskList().stream().filter(t -> t.getId().equals(taskId)).findFirst();
         if(task.isPresent())
         {
-            boolean sameObject = task.equals(taskObject);
+            boolean sameObject = task.get().getTitle().equals(taskObject.getTitle());
             if(sameObject){
                 throw new InformationExistsException("THis update changes nothing");
             }else{
@@ -149,7 +148,7 @@ public class ProjectService {
 
     }
 
- //   @DeleteMapping(path = "/projects/{projectId}/tasks/{taskId}")
+    @DeleteMapping(path = "/projects/{projectId}/tasks/{taskId}")
     public void deleteProjectTask(Long projectId,
                                   Long taskId)
     {
