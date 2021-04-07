@@ -36,6 +36,10 @@ and below dependency:
 
     @Id
 
+<<<<<<< HEAD
+### Project Environment
+This is a spring boot api for a task management software. Postgres SQL is used as the backend.
+=======
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -60,70 +64,123 @@ property names and queried them accordingly. Magic.
 Task findByTitle(String taskName);
 
 
+##Project Class
+The project class is a 'wrapper' to encapsulate the tasks as well as provide further higher level project specific details
+The model is simple:
 
 
+    @Id
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-## Deliverables
+    @Column
+    private String name;
 
-Push your changes to a GitHub repo.
+    @Column
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date startDate;
 
-You will maintain a `README` that will include the following:
+    @Column
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date endDate;
 
-- A link to the GitHub repo.
-- All of your design decisions.
-- The reasons behind each decision.
-- What went right.
-- Challenges you faced.
-- Which part you enjoyed working on the most.
+    @Column
+    private Priority priority;
 
-At the end of this lab, after testing is done, we will hear a **five-minute presentation** from each student. Each
-student will go through its `README`, talking through each point. Be prepared to answer some questions.
 
-----
+    @OneToMany(mappedBy = "project")
+    private List<Task> taskList;
 
-## Exercise
+This will have a bi direction one to many relationship with the tasks.
 
-We'll build this back-end app incrementally.
+Makes sense! You have a project and tasks related to it!
 
-### Step 1 (Spring Boot)
+##Refactor
+Because the tasks are within the project, I need to refactor the end points, so that we are navigating down the tree:
+localhost:{PORTNUMBER}/projects/{projectId}/tasks/{taskId}
 
-Today, you'll just set up your app using Spring Boot, as we did in the lesson earlier.
+##Infinite Loop caused by bi-directional one to many
+I ran into an error where I was receiving an infinite loop in my api tests when adding a new task to a project.
 
-- Use Maven to download and build all of the dependencies.
-- Create a REST controller.
-- Create a `/hello` endpoint that returns a `'Hello World!'` string.
-- Use Postman to test the API.
+    @OneToMany(mappedBy = "project")
+    private List<Task> taskList;
 
-#### COMMIT MESSAGE: Step 1 - COMPLETED
+    @ManyToOne
+    @JoinColumn(name="project_id")
+    private Project project;
 
-----
+The models were linked per the attached. Upon researching, I found that adding the @JSON Ignore Annotation helped resolve the issue, specifically on the project model like so:
 
-### Step 2 (Spring Profile)
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name="project_id")
+    private Project project;
 
-In the next step, you'll use Spring Profile to create a development-specific environment in your app. This is where all
-of your environment-specific configuration will go.
 
-#### COMMIT MESSAGE: Step 2 - COMPLETED
+##Priority Enum
+A key point of the application is to also include the Priority Leve of the project. For this I used an Enum class with the appropriate priority levels.
 
-----
+##Time to Refactor 
+I now have a Project controller and a Task controller. I am going to refactor the code so that the end points read like this:
+localhost:{PORTNUMBER}/projects/{projectId}/tasks/{taskId}
+This makes logical sense from a user standpoint.
+
+##Recursion and Return Types
+A couple of interesting things happened in my update project method.
+I learned that a date object returned from the database via our repository is a different, albeit similarly named class than the data type used in the model.
+project End Date
+2012-12-17 java.sql.Date
+projectObject End Date
+Sun Dec 16 18:00:00 CST 2012 java.util.Date
+
+While on the Java end the date is shown as Java util.date, when retrieved via the API it is of java.sql.Date type.
+
+Slightly different but different enough so that the standard comparison methods will not work!
+
+
+    @PutMapping(path = "/projects/{projectId}")
+    public Project updateProject(@PathVariable Long projectId, @RequestBody Project projectObject){
+        System.out.println("Updating a Project with ID " + projectId);
+        Optional<Project> project = projectRepository.findById(projectId);
+        if(project.isPresent()){
+            System.out.println("project End Date");
+            System.out.println(project.get().getEndDate() + " " + project.get().getEndDate().getClass().getName());
+            System.out.println("projectObject End Date");
+            System.out.println(projectObject.getEndDate() + " " + projectObject.getEndDate().getClass().getName());
+            if(project.get().getName().equals(projectObject.getName())){
+                throw new InformationExistsException("No updates here");
+            }else{
+                  return projectRepository.save(projectObject);
+            }
+        }else{
+            throw new InformationNotFoundException("This project does not exists");
+        }
+    }
+
+>>>>>>> advanced
 
 ### Step 3 (Spring Data)
 
-Create `Category` and `Item` model. You'll use PostgreSQL as your database and Spring Data to talk to your database.
+My model will be defined through a Task object with a simple domain
 
-This step will be done in two parts.
+    @Id
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-#### 3(a)
+    @Column
+    private String name;
 
-In this step, you'll only create a `Category` model.
+    @Column
+    private String description;
 
-- The `Category` should have at least two fields: `name` and `description`.
-- You'll create full CRUD endpoints for `Category` controller.
+    @Column
+    private boolean isCompleted;
 
-Let's test all the endpoints
 
-| Request Type | URL| |--|--| | GET | /api/categories/ | |POST|/api/categories/| |GET|/api/categories/{categoryId}|
-|PUT|/api/categories/{categoryId}| |DELETE|/api/categories/{categoryId}|
 
 #### COMMIT MESSAGE: Step 3A - COMPLETED
 
