@@ -1,5 +1,6 @@
 package com.sei.todo.controller;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.sei.todo.exceptions.InformationExistsException;
 import com.sei.todo.exceptions.InformationNotFoundException;
 import com.sei.todo.model.Project;
@@ -45,6 +46,34 @@ public class ProjectController {
             return this.projectRepository.save(projectObject);
     }
 
+    @PutMapping(path = "/projects/{projectId}")
+    public Project updateProject(@PathVariable Long projectId, @RequestBody Project projectObject){
+        System.out.println("Updating a Project with ID " + projectId);
+        Optional<Project> project = projectRepository.findById(projectId);
+        if(project.isPresent()){
+            if(project.get().getName().equals(projectObject.getName())){
+                throw new InformationExistsException("No updates here");
+            }else{
+                  return projectRepository.save(projectObject);
+            }
+        }else{
+            throw new InformationNotFoundException("This project does not exists");
+        }
+    }
+
+    @DeleteMapping(path="/projects/{projectId}")
+    public void deleteProject(@PathVariable Long projectId){
+        Optional<Project> project = projectRepository.findById(projectId);
+        if(project.isPresent())
+        {
+            System.out.println("project deleted " + projectId);
+            projectRepository.deleteById(projectId);
+        }
+        else
+        {
+            throw new InformationNotFoundException("Cannot delete a category that does not exists");
+        }
+    }
 
 
 }

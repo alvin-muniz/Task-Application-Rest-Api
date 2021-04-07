@@ -94,6 +94,10 @@ This will have a bi direction one to many relationship with the tasks.
 
 Makes sense! You have a project and tasks related to it!
 
+##Refactor
+Because the tasks are within the project, I need to refactor the end points, so that we are navigating down the tree:
+localhost:{PORTNUMBER}/projects/{projectId}/tasks/{taskId}
+
 ##Infinite Loop caused by bi-directional one to many
 I ran into an error where I was receiving an infinite loop in my api tests when adding a new task to a project.
 
@@ -112,49 +116,46 @@ The models were linked per the attached. Upon researching, I found that adding t
     private Project project;
 
 
-## Deliverables
+##Priority Enum
+A key point of the application is to also include the Priority Leve of the project. For this I used an Enum class with the appropriate priority levels.
 
-Push your changes to a GitHub repo.
+##Time to Refactor 
+I now have a Project controller and a Task controller. I am going to refactor the code so that the end points read like this:
+localhost:{PORTNUMBER}/projects/{projectId}/tasks/{taskId}
+This makes logical sense from a user standpoint.
 
-You will maintain a `README` that will include the following:
+##Recursion and Return Types
+A couple of interesting things happened in my update project method.
+I learned that a date object returned from the database via our repository is a different, albeit similarly named class than the data type used in the model.
+project End Date
+2012-12-17 java.sql.Date
+projectObject End Date
+Sun Dec 16 18:00:00 CST 2012 java.util.Date
 
-- A link to the GitHub repo.
-- All of your design decisions.
-- The reasons behind each decision.
-- What went right.
-- Challenges you faced.
-- Which part you enjoyed working on the most.
+While on the Java end the date is shown as Java util.date, when retrieved via the API it is of java.sql.Date type.
 
-At the end of this lab, after testing is done, we will hear a **five-minute presentation** from each student. Each
-student will go through its `README`, talking through each point. Be prepared to answer some questions.
+Slightly different but different enough so that the standard comparison methods will not work!
 
-----
 
-## Exercise
+    @PutMapping(path = "/projects/{projectId}")
+    public Project updateProject(@PathVariable Long projectId, @RequestBody Project projectObject){
+        System.out.println("Updating a Project with ID " + projectId);
+        Optional<Project> project = projectRepository.findById(projectId);
+        if(project.isPresent()){
+            System.out.println("project End Date");
+            System.out.println(project.get().getEndDate() + " " + project.get().getEndDate().getClass().getName());
+            System.out.println("projectObject End Date");
+            System.out.println(projectObject.getEndDate() + " " + projectObject.getEndDate().getClass().getName());
+            if(project.get().getName().equals(projectObject.getName())){
+                throw new InformationExistsException("No updates here");
+            }else{
+                  return projectRepository.save(projectObject);
+            }
+        }else{
+            throw new InformationNotFoundException("This project does not exists");
+        }
+    }
 
-We'll build this back-end app incrementally.
-
-### Step 1 (Spring Boot)
-
-Today, you'll just set up your app using Spring Boot, as we did in the lesson earlier.
-
-- Use Maven to download and build all of the dependencies.
-- Create a REST controller.
-- Create a `/hello` endpoint that returns a `'Hello World!'` string.
-- Use Postman to test the API.
-
-#### COMMIT MESSAGE: Step 1 - COMPLETED
-
-----
-
-### Step 2 (Spring Profile)
-
-In the next step, you'll use Spring Profile to create a development-specific environment in your app. This is where all
-of your environment-specific configuration will go.
-
-#### COMMIT MESSAGE: Step 2 - COMPLETED
-
-----
 
 ### Step 3 (Spring Data)
 

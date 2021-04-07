@@ -71,7 +71,7 @@ public class Task {
                 ", title='" + title + '\'' +
                 ", isCompleted=" + isCompleted +
                 ", description='" + description + '\'' +
-                ", project=" + project +
+//                ", project=" + project +
                 '}';
     }
 

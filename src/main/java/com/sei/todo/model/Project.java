@@ -104,7 +104,7 @@ public class Project {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", priority=" + priority +
-                ", taskList=" + taskList +
+//                ", taskList=" + taskList +
                 '}';
     }
 
