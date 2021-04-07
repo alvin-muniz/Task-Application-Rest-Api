@@ -154,8 +154,9 @@ public class ProjectService {
     {
         Project project = getProject(projectId);
 
-        Optional task =
-                Optional.ofNullable(project.getTaskList().stream().filter(t -> t.getId().equals(taskId))).stream().findFirst();
+        Optional<Task> task =
+                project.getTaskList().stream().filter(t -> t.getId().equals(taskId)).findFirst();
+
         if(task.isPresent()) {
             this.taskRepository.delete((Task)task.get());
         }
